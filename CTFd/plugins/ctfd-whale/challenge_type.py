@@ -39,6 +39,7 @@ class DynamicValueDockerChallenge(BaseChallenge):
             "state": challenge.state,
             "max_attempts": challenge.max_attempts,
             "type": challenge.type,
+            "flag_prefix": challenge.flag_prefix,
             "type_data": {
                 "id": cls.id,
                 "name": cls.name,

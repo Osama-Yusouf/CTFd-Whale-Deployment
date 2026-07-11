@@ -37,6 +37,17 @@
                required>
     </div>
     <div class="form-group">
+        <label for="flag_prefix">Dynamic Flag Prefix<br>
+            <small class="form-text text-muted">
+                The leet-speak text inside the flag, <strong>without</strong> <code>expX{}</code>.
+                e.g. <code>c4ch3_p01s0n1ng_1s_t00_d4ng3r</code> → flag becomes <code>expX{c4ch3_p01s0n1ng_1s_t00_d4ng3r_a1b2c3d4}</code>
+            </small>
+        </label>
+        <input type="text" class="form-control" name="flag_prefix"
+               placeholder="e.g. c4ch3_p01s0n1ng_1s_t00_d4ng3r">
+    </div>
+
+    <div class="form-group">
         <label for="value">Docker Container Memory Limit<br>
             <small class="form-text text-muted">
                 The memory usage limit

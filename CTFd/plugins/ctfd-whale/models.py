@@ -48,6 +48,7 @@ class DynamicDockerChallenge(DynamicChallenge):
     docker_image = db.Column(db.Text, default=0)
     redirect_type = db.Column(db.Text, default=0)
     redirect_port = db.Column(db.Integer, default=0)
+    flag_prefix = db.Column(db.Text, default="dynamic")
 
     def __init__(self, *args, **kwargs):
         kwargs["initial"] = kwargs["value"]
@@ -84,27 +85,15 @@ class WhaleContainer(db.Model):
         self.start_time = datetime.now()
         self.renew_count = 0
         self.uuid = str(uuid.uuid4())
-        
-        # Determine flag prefix based on challenge name
-        from CTFd.models import Challenges
-        chal = Challenges.query.filter_by(id=challenge_id).first()
-        chal_name = chal.name if chal else ""
-        
-        if chal_name == "Operation THEYA":
-            prefix = "expX{m3m0ry_p01s0n1ng_r4g_b0und4ry_f41lur3"
-        elif chal_name == "PATHS protocol":
-            prefix = "expX{p4ths_n3v3r_f0rg3t_th3_f1rst_m3m0ry_th3_f0und1ng_m0d3_activ4t3d"
-        elif chal_name == "Shattered-Dimensions":
-            prefix = "expX{r34l1ty_r3st0r3d"
-        elif chal_name == "DNA Forgery":
-            prefix = "expX{0mn1tr1x_m4st3r_c0ntr0l_unl0ck3d"
-        elif chal_name == "webtrace":
-            prefix = "expX{w17h_6r347_p0w3r_c0m35_6r347_r35p0n5181117y"
-        else:
-            prefix = "expX{dynamic"
-            
-        random_str = "".join(random.choices("abcdefghijklmnopqrstuvwxyz0123456789", k=8))
-        self.flag = f"{prefix}_{random_str}}}"
+
+        # Read the per-challenge flag prefix set by the admin in the create/update form.
+        # Falls back to "dynamic" if the admin left it blank.
+        chal = DynamicDockerChallenge.query.filter_by(id=challenge_id).first()
+        raw_prefix = (chal.flag_prefix or "").strip() if chal else ""
+        prefix = raw_prefix if raw_prefix else "dynamic"
+
+        random_str = "".join(random.choices("abcdef0123456789", k=8))
+        self.flag = f"expX{{{prefix}_{random_str}}}"
 
     @property
     def user_access(self):
