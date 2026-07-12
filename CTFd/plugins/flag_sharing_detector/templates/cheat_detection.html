@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Cheat Detection <small class="text-muted">Flag Sharing Alerts</small></h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% if cheats %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Warning!</strong> We detected users submitting dynamic flags that belong to other players!
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                <strong>All clear!</strong> No cross-team flag sharing detected.
+            </div>
+            {% endif %}
+
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th>Cheater (Submitted the Flag)</th>
+                        <th>Victim (Original Owner)</th>
+                        <th>Challenge</th>
+                        <th>Flag Submitted</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cheat in cheats %}
+                    <tr>
+                        <td><a href="/admin/users/{{ cheat.cheater_id }}">{{ cheat.cheater_name }}</a></td>
+                        <td><a href="/admin/users/{{ cheat.victim_id }}">{{ cheat.victim_name }}</a></td>
+                        <td>{{ cheat.challenge_name }}</td>
+                        <td><code>{{ cheat.flag }}</code></td>
+                        <td>{{ cheat.date }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No flag sharing detected!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
