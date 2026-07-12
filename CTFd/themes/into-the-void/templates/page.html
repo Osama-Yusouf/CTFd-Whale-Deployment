@@ -16,8 +16,19 @@
   {% if request.path == '/' or request.path == '/index' %}
     {{ content | safe }}
   {% else %}
-    <div class="container">
-      {{ content | safe }}
+    <div class="container mt-5 pt-5 pb-5">
+      <div class="card p-4 p-md-5">
+        {{ content | safe }}
+        
+        <!-- Admin Edit Button -->
+        {% if Session.type == "admin" %}
+          <div class="mt-5 pt-3 text-end" style="border-top: 1px solid rgba(255,255,255,0.1);">
+            <a href="/admin/pages" class="btn btn-outline-primary btn-sm">
+              ✏️ Edit Page Content
+            </a>
+          </div>
+        {% endif %}
+      </div>
     </div>
   {% endif %}
 {% endblock %}
