@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
+{{ super() }}
 <style>
 
 th.chalname {
@@ -115,6 +116,7 @@ th.chalname {
 {% endblock %}
 
 {% block scripts %}
+    {{ super() }}
     <script>var challenges = {{ challenges | tojson }};</script>
     <script src="{{ request.script_root }}/themes/{{ theme }}/static/js/utils.js"></script>
     <script src="{{ request.script_root }}/matrix/static/dragscroll.js"></script>
