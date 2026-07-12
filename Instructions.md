@@ -59,5 +59,16 @@ We have a custom-built, proprietary plugin installed at `CTFd/plugins/flag_shari
 
 ---
 
-## 5. Theme and Aesthetics
+## 5. Preventing Hint Smurfing (Burner Accounts)
+To prevent players from creating fake "burner" accounts to spend points on hints without affecting their main team score, you MUST lock registration once the CTF officially starts.
+
+**How to lock registration:**
+1. Go to **Admin Panel -> Config -> Visibility** (Under the "Access" section on the left sidebar).
+2. Look for **Registration Visibility**.
+3. Change it from "Public" to **"Private"** or **"Hidden"**.
+4. Once this is set, nobody can create an account mid-game. If a legitimate player needs an account late, an Admin must manually create it for them in the Admin Panel -> Users menu.
+
+---
+
+## 6. Theme and Aesthetics
 The theme is strictly bound to the `CTFd/themes/into-the-void/` directory. All colors, CSS, and HTML assets are authored under the name Mohammed Osama Yusouf SM. Do not use standard CTFd themes, as they will lack the custom visual styles required for this event.
