@@ -1,7 +1,7 @@
 {
-    "name": "Stargaze",
-    "id": "stargaze",
-    "author": "Praneesh R V",
+    "name": "Into The Void",
+    "id": "into-the-void",
+    "author": "Mohammed Osama Yusouf SM",
     "version": "1.0.0",
     "description": "A space-themed CTFd theme with interactive starfield background."
 }

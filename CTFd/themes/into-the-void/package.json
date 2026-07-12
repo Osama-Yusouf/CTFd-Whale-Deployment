@@ -1,8 +1,8 @@
 {
-  "name": "stargaze",
+  "name": "into-the-void",
   "private": true,
   "version": "0.0.1",
-  "author": "Praneesh R V",
+  "author": "Mohammed Osama Yusouf SM",
   "scripts": {
     "dev": "vite build --watch --mode=development",
     "build": "vite build",

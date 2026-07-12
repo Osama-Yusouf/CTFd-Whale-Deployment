@@ -1,10 +1,10 @@
 import re
 
-with open(r'c:\Dev\ExploitX\CTFd-3.8.6\CTFd\themes\stargaze\templates\base.html', 'r', encoding='utf-8') as f:
+with open(r'c:\Dev\ExploitX\CTFd-Whale-Deployment\CTFd\themes\into-the-void\templates\base.html', 'r', encoding='utf-8') as f:
     content = f.read()
 
 replacements = {
-    'LEMON STARGAZE THEME': 'BLUE SPACE THEME',
+    'LEMON INTO THE VOID THEME': 'BLUE SPACE THEME',
     '--lemon-light': '--space-light',
     '--lemon-dim': '--space-dim',
     '--lemon-dark': '--space-dark',
@@ -29,7 +29,7 @@ replacements = {
 for k, v in replacements.items():
     content = content.replace(k, v)
 
-with open(r'c:\Dev\ExploitX\CTFd-3.8.6\CTFd\themes\stargaze\templates\base.html', 'w', encoding='utf-8') as f:
+with open(r'c:\Dev\ExploitX\CTFd-Whale-Deployment\CTFd\themes\into-the-void\templates\base.html', 'w', encoding='utf-8') as f:
     f.write(content)
 
 print("Updated base.html successfully.")

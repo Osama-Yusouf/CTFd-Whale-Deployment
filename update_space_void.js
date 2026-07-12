@@ -437,4 +437,4 @@ const js_content = `document.addEventListener('DOMContentLoaded', function () {
 `;
 
 const fs = require('fs');
-fs.writeFileSync('c:\\\\Dev\\\\ExploitX\\\\CTFd-3.8.6\\\\CTFd\\\\themes\\\\stargaze\\\\assets\\\\js\\\\space_v5.js', js_content, 'utf8');
+fs.writeFileSync('c:\\\\Dev\\\\ExploitX\\\\CTFd-Whale-Deployment\\\\CTFd\\\\themes\\\\into-the-void\\\\assets\\\\js\\\\space_v5.js', js_content, 'utf8');

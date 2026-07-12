@@ -1,4 +1,4 @@
-# Stargaze Theme 🍋
+# Into The Void Theme 🍋
 
 A premium, glass-morphism dark theme for CTFd with vibrant lemon/lime accents. Features a stunning Tailwind CSS homepage and custom-styled components.
 

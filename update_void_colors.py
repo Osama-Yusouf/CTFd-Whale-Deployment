@@ -1,11 +1,11 @@
 import re
 
-with open(r'c:\Dev\ExploitX\CTFd-3.8.6\CTFd\themes\stargaze\templates\base.html', 'r', encoding='utf-8') as f:
+with open(r'c:\Dev\ExploitX\CTFd-Whale-Deployment\CTFd\themes\into-the-void\templates\base.html', 'r', encoding='utf-8') as f:
     content = f.read()
 
 replacements = {
     'BLUE SPACE THEME': 'INTO THE VOID THEME',
-    'LEMON STARGAZE THEME': 'INTO THE VOID THEME',
+    'LEMON INTO THE VOID THEME': 'INTO THE VOID THEME',
     '--space': '--void',
     '--lemon': '--void',
     '#00f0ff': '#ff00ff', # Primary Neon Magenta
@@ -53,7 +53,7 @@ cursor2_regex = r"cursor:\s*url\('data:image/svg\+xml;utf8,<svg[^>]+>.*?</svg>'\
 cursor2_new = "cursor: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"5\" fill=\"%23000\" stroke=\"%23ff00ff\" stroke-width=\"2\"/><circle cx=\"16\" cy=\"16\" r=\"14\" fill=\"none\" stroke=\"%238a2be2\" stroke-width=\"2\" stroke-dasharray=\"6 4\"/></svg>') 16 16, pointer !important;"
 content = re.sub(cursor2_regex, cursor2_new, content)
 
-with open(r'c:\Dev\ExploitX\CTFd-3.8.6\CTFd\themes\stargaze\templates\base.html', 'w', encoding='utf-8') as f:
+with open(r'c:\Dev\ExploitX\CTFd-Whale-Deployment\CTFd\themes\into-the-void\templates\base.html', 'w', encoding='utf-8') as f:
     f.write(content)
 
 print("Updated base.html successfully.")
