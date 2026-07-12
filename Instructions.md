@@ -55,14 +55,9 @@ We have a custom-built, proprietary plugin installed at `CTFd/plugins/flag_shari
 2. The dashboard automatically joins the `Submissions` table with the `WhaleContainer` table. 
 3. If Team A submits a dynamic flag that was specifically generated for Team B's container, it will instantly flag them and display the Cheater, the Victim, the Challenge, and the Timestamp.
 
----
 
-## 5. The Matrix Scoreboard
-The default CTFd list scoreboard has been entirely replaced with a hacker-aesthetic Matrix Scoreboard to fit the "Into The Void" theme.
-- **Configuration:** None required! 
-- The `/scoreboard` page automatically compiles a responsive grid showing exactly which teams have solved which challenges, updated in real-time.
 
 ---
 
-## 6. Theme and Aesthetics
+## 5. Theme and Aesthetics
 The theme is strictly bound to the `CTFd/themes/into-the-void/` directory. All colors, CSS, and HTML assets are authored under the name Mohammed Osama Yusouf SM. Do not use standard CTFd themes, as they will lack the custom visual styles required for this event.
