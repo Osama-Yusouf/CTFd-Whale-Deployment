@@ -52,6 +52,14 @@
               </small>
             </div>
 
+            <div class="mb-3">
+              <b><label class="form-label" for="registration_token">Registration Token</label></b>
+              <input class="form-control" id="registration_token" name="registration_token" required="" type="text" value="">
+              <small class="form-text text-muted">
+                Your unique single-use token provided by your admin
+              </small>
+            </div>
+
             {{ form.nonce() }}
 
             {{ render_extra_fields(form.extra) }}

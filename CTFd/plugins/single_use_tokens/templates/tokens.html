@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>Single-Use Registration Tokens</h1>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			{% include "components/errors.html" %}
+			
+			<div class="card mb-4">
+				<div class="card-body">
+					<form method="POST">
+						<input type="hidden" name="nonce" value="{{ Session.nonce }}">
+						<div class="form-group">
+							<label for="count">Number of tokens to generate:</label>
+							<input type="number" class="form-control w-25" id="count" name="count" value="1" min="1" max="100">
+						</div>
+						<button type="submit" class="btn btn-primary">Generate Tokens</button>
+					</form>
+				</div>
+			</div>
+
+			<table class="table table-striped border">
+				<thead>
+					<tr>
+						<th>Token</th>
+						<th>Status</th>
+						<th>Created At</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for token in tokens %}
+					<tr>
+						<td><code>{{ token.token }}</code></td>
+						<td>
+							{% if token.used %}
+								<span class="badge badge-danger">Used</span>
+							{% else %}
+								<span class="badge badge-success">Available</span>
+							{% endif %}
+						</td>
+						<td>{{ token.created_at }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}
