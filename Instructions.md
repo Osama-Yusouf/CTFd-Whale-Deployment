@@ -36,18 +36,7 @@ We use a modern webhook plugin to broadcast platform events directly to your Dis
 
 ---
 
-## 3. Bot Protection (Google reCAPTCHA)
-To prevent bots from brute-forcing registrations and taking down the server, reCAPTCHA is integrated into the registration flow.
-
-**How to configure:**
-1. Visit the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin) and generate a **v2 Checkbox** Site Key and Secret Key.
-2. In CTFd, go to **Admin Panel -> Settings**.
-3. Locate the **reCAPTCHA** fields and paste in your keys.
-*(Note: To prevent the application from crashing before you add your real keys, dummy environment variables are currently hardcoded in `docker-compose.yml`. You may replace those with your real keys later).*
-
----
-
-## 4. Cheat Detection (Flag Sharing Detector)
+## 3. Cheat Detection (Flag Sharing Detector)
 We have a custom-built, proprietary plugin installed at `CTFd/plugins/flag_sharing_detector` that perfectly catches players sharing flags on dynamic container challenges.
 
 **How to use it:**

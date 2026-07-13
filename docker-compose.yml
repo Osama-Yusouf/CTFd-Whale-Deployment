@@ -14,9 +14,6 @@ services:
       - ACCESS_LOG=-
       - ERROR_LOG=-
       - REVERSE_PROXY=true
-      - CAPTCHA_PROVIDER=Google
-      - CAPTCHA_SITE_KEY=dummy
-      - CAPTCHA_SECRET=dummy
     volumes:
       - .data/CTFd/logs:/var/log/CTFd
       - .data/CTFd/uploads:/var/uploads
