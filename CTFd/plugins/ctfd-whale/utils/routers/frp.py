@@ -86,7 +86,7 @@ class FrpRouter(BaseRouter):
     def access(self, container: WhaleContainer):
         if container.challenge.redirect_type == 'direct':
             ip = get_config("whale:frp_direct_ip_address", "127.0.0.1")
-            if container.challenge.category.lower() in ['web', 'osint']:
+            if 'web' in container.challenge.category.lower() or container.challenge.category.lower() in ['osint']:
                 return f'<a target="_blank" href="http://{ip}:{container.port}/">Link to the Challenge (Port {container.port})</a>'
             return f'nc {ip} {container.port}'
         elif container.challenge.redirect_type == 'http':

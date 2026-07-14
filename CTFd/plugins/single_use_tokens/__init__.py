@@ -25,13 +25,19 @@ def load(app):
     @admins_only
     def manage_tokens():
         if request.method == 'POST':
-            # Generate a batch of tokens or just one
-            count = int(request.form.get('count', 1))
-            for _ in range(count):
-                new_token = SingleUseToken(token=generate_random_token())
-                db.session.add(new_token)
-            db.session.commit()
-            flash(f'Generated {count} new token(s).', 'success')
+            action = request.form.get('action')
+            if action == 'clear':
+                SingleUseToken.query.delete()
+                db.session.commit()
+                flash('All tokens have been cleared.', 'success')
+            else:
+                # Generate a batch of tokens or just one
+                count = int(request.form.get('count', 1))
+                for _ in range(count):
+                    new_token = SingleUseToken(token=generate_random_token())
+                    db.session.add(new_token)
+                db.session.commit()
+                flash(f'Generated {count} new token(s).', 'success')
             return redirect(url_for('single_use_tokens.manage_tokens'))
 
         tokens = SingleUseToken.query.order_by(SingleUseToken.created_at.desc()).all()

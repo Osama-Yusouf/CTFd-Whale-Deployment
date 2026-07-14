@@ -14,14 +14,22 @@
 			
 			<div class="card mb-4">
 				<div class="card-body">
-					<form method="POST">
-						<input type="hidden" name="nonce" value="{{ Session.nonce }}">
-						<div class="form-group">
-							<label for="count">Number of tokens to generate:</label>
-							<input type="number" class="form-control w-25" id="count" name="count" value="1" min="1" max="100">
-						</div>
-						<button type="submit" class="btn btn-primary">Generate Tokens</button>
-					</form>
+					<div class="d-flex justify-content-between align-items-end">
+						<form method="POST">
+							<input type="hidden" name="nonce" value="{{ Session.nonce }}">
+							<div class="form-group">
+								<label for="count">Number of tokens to generate:</label>
+								<input type="number" class="form-control" style="width: 150px;" id="count" name="count" value="1" min="1" max="100">
+							</div>
+							<button type="submit" class="btn btn-primary">Generate Tokens</button>
+						</form>
+
+						<form method="POST" onsubmit="return confirm('Are you sure you want to completely clear ALL user tokens? This action cannot be undone.');">
+							<input type="hidden" name="nonce" value="{{ Session.nonce }}">
+							<input type="hidden" name="action" value="clear">
+							<button type="submit" class="btn btn-danger">Clear All Tokens</button>
+						</form>
+					</div>
 				</div>
 			</div>
 

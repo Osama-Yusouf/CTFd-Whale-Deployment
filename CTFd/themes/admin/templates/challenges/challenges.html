@@ -14,9 +14,140 @@
 					<i class="btn-fa fas fa-plus-circle"></i>
 				</span>
 			</a>
+			<a class="no-decoration ml-2" href="javascript:void(0)" onclick="$('#wavesModal').modal('show'); fetchWaves();">
+				<span role="button" data-toggle="tooltip" title="Manage Waves">
+					<i class="btn-fa fas fa-water"></i>
+				</span>
+			</a>
 		</h1>
 	</div>
 </div>
+
+<!-- Waves Modal -->
+<div class="modal fade" id="wavesModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Manage Release Waves</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Create New Wave</h6>
+        <div class="row mb-4">
+          <div class="col-md-5">
+            <input type="text" id="wave-name" class="form-control" placeholder="Wave Name (e.g., Wave 1)">
+          </div>
+          <div class="col-md-5">
+            <input type="datetime-local" id="wave-time" class="form-control">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100" onclick="createWave()">Create</button>
+          </div>
+        </div>
+        <hr>
+        <h6>Existing Waves</h6>
+        <div id="waves-list">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const allChallenges = [
+{% for challenge in challenges %}
+    { id: {{ challenge.id }}, name: "{{ challenge.name|replace('"', '\\"') }}", category: "{{ challenge.category|replace('"', '\\"') }}" },
+{% endfor %}
+];
+
+function fetchWaves() {
+    CTFd.fetch('/api/v1/waves', {method: 'GET'})
+    .then(r => r.json())
+    .then(data => {
+        let assignedChallengeIds = new Set();
+        data.data.forEach(w => w.challenges.forEach(cid => assignedChallengeIds.add(cid)));
+
+        let html = '';
+        data.data.forEach(w => {
+            let categories = {};
+            allChallenges.forEach(c => {
+                const isThisWave = w.challenges.includes(c.id);
+                // If it belongs to another wave, hide it!
+                if (!isThisWave && assignedChallengeIds.has(c.id)) {
+                    return; 
+                }
+                if (!categories[c.category]) {
+                    categories[c.category] = [];
+                }
+                categories[c.category].push(c);
+            });
+            
+            let chalCheckboxes = '';
+            for (const [category, chals] of Object.entries(categories)) {
+                chalCheckboxes += `<div class="mb-2"><strong>${category}</strong><br>`;
+                chalCheckboxes += chals.map(c => {
+                    const isChecked = w.challenges.includes(c.id) ? 'checked' : '';
+                    return `
+                    <div class="form-check form-check-inline" style="margin-right: 15px;">
+                      <input class="form-check-input wave-chal-checkbox-${w.id}" type="checkbox" id="wave-${w.id}-chal-${c.id}" value="${c.id}" ${isChecked}>
+                      <label class="form-check-label text-truncate" style="max-width: 150px;" title="${c.name}" for="wave-${w.id}-chal-${c.id}">${c.name}</label>
+                    </div>
+                    `;
+                }).join('');
+                chalCheckboxes += `</div>`;
+            }
+            
+            html += `<div class="card mb-2"><div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <strong>${w.name}</strong> 
+                    <span class="badge ${w.released ? 'badge-success' : 'badge-warning'}">${w.released ? 'Released' : 'Pending'}</span>
+                </div>
+                <div class="text-muted small">Release Time: ${w.release_time}</div>
+                <div class="mt-2">
+                    <div style="max-height: 120px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 8px; border-radius: 4px; background: #fafafa;">
+                        ${chalCheckboxes || '<i>No challenges available</i>'}
+                    </div>
+                    <button class="btn btn-sm btn-info" onclick="assignChallenges(${w.id})">Save Challenges</button>
+                    <button class="btn btn-sm btn-danger float-right" onclick="deleteWave(${w.id})">Delete Wave</button>
+                </div>
+            </div></div>`;
+        });
+        document.getElementById('waves-list').innerHTML = html || '<i>No waves created yet.</i>';
+    });
+}
+function createWave() {
+    const name = document.getElementById('wave-name').value;
+    const time = document.getElementById('wave-time').value;
+    if(!name || !time) return alert('Name and time required');
+    // time is local time, we convert it to iso string for backend
+    const isoTime = new Date(time).toISOString();
+    CTFd.fetch('/api/v1/waves', {
+        method: 'POST',
+        body: JSON.stringify({name: name, release_time: isoTime})
+    }).then(r => r.json()).then(r => {
+        if (!r.success) {
+            alert('Failed to create wave (name might already exist or time is invalid)');
+        } else {
+            document.getElementById('wave-name').value = '';
+            fetchWaves();
+        }
+    });
+}
+function deleteWave(id) {
+    if(confirm('Delete wave?')) {
+        CTFd.fetch('/api/v1/waves/' + id, {method: 'DELETE'}).then(r => fetchWaves());
+    }
+}
+function assignChallenges(id) {
+    const checkboxes = document.querySelectorAll('.wave-chal-checkbox-' + id + ':checked');
+    const ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    CTFd.fetch('/api/v1/waves/' + id + '/challenges', {
+        method: 'POST',
+        body: JSON.stringify({challenge_ids: ids})
+    }).then(r => { alert('Saved successfully!'); fetchWaves(); });
+}
+</script>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
