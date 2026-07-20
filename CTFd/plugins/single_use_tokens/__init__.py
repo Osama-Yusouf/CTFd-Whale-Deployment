@@ -10,6 +10,7 @@ class SingleUseToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(32), unique=True)
     used = db.Column(db.Boolean, default=False)
+    used_by = db.Column(db.String(128), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
 def generate_random_token():
@@ -63,8 +64,9 @@ def load(app):
                     flash("Invalid or already used Registration Token.", "error")
                     return redirect(url_for('auth.register'))
                 
-                # Valid token! Mark as used
+                # Valid token! Mark as used and record the user
                 token_record.used = True
+                token_record.used_by = request.form.get('name')
                 db.session.commit()
                 
                 # Proceed to normal CTFd registration logic

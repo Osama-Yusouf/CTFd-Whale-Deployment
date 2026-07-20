@@ -57,7 +57,7 @@
 <script>
 const allChallenges = [
 {% for challenge in challenges %}
-    { id: {{ challenge.id }}, name: "{{ challenge.name|replace('"', '\\"') }}", category: "{{ challenge.category|replace('"', '\\"') }}" },
+    { id: {{ challenge.id }}, name: "{{ challenge.name|replace('"', '\\"') }}", category: "{{ challenge.category|replace('"', '\\"') }}", value: {{ challenge.value or 0 }} },
 {% endfor %}
 ];
 
@@ -85,36 +85,61 @@ function fetchWaves() {
             
             let chalCheckboxes = '';
             for (const [category, chals] of Object.entries(categories)) {
-                chalCheckboxes += `<div class="mb-2"><strong>${category}</strong><br>`;
+                chalCheckboxes += `<div class="mb-3 border rounded p-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>${category}</strong>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="toggleCategory(this, ${w.id})">Toggle All</button>
+                    </div>
+                    <div class="row">`;
                 chalCheckboxes += chals.map(c => {
                     const isChecked = w.challenges.includes(c.id) ? 'checked' : '';
                     return `
-                    <div class="form-check form-check-inline" style="margin-right: 15px;">
-                      <input class="form-check-input wave-chal-checkbox-${w.id}" type="checkbox" id="wave-${w.id}-chal-${c.id}" value="${c.id}" ${isChecked}>
-                      <label class="form-check-label text-truncate" style="max-width: 150px;" title="${c.name}" for="wave-${w.id}-chal-${c.id}">${c.name}</label>
+                    <div class="col-md-4 mb-1">
+                        <div class="form-check">
+                          <input class="form-check-input wave-chal-checkbox-${w.id}" type="checkbox" id="wave-${w.id}-chal-${c.id}" value="${c.id}" ${isChecked}>
+                          <label class="form-check-label text-truncate" style="max-width: 200px;" title="${c.name} (${c.value})" for="wave-${w.id}-chal-${c.id}">${c.name} (${c.value})</label>
+                        </div>
                     </div>
                     `;
                 }).join('');
-                chalCheckboxes += `</div>`;
+                chalCheckboxes += `</div></div>`;
             }
             
-            html += `<div class="card mb-2"><div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <strong>${w.name}</strong> 
-                    <span class="badge ${w.released ? 'badge-success' : 'badge-warning'}">${w.released ? 'Released' : 'Pending'}</span>
-                </div>
-                <div class="text-muted small">Release Time: ${w.release_time}</div>
-                <div class="mt-2">
-                    <div style="max-height: 120px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 8px; border-radius: 4px; background: #fafafa;">
-                        ${chalCheckboxes || '<i>No challenges available</i>'}
+            const releaseDate = new Date(w.release_time + 'Z');
+            const diffMs = releaseDate - new Date();
+            let relativeStr = w.released ? "(Deployed)" : 
+                              (diffMs > 0 ? `(Deploys in ${Math.floor(diffMs/3600000)}h ${Math.floor((diffMs%3600000)/60000)}m)` : "(Deploying...)");
+            
+            html += `<div class="card mb-2">
+                <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer; padding: 0.75rem 1.25rem; background-color: #f8f9fa; border-bottom: 1px solid rgba(0,0,0,.125);" onclick="$('#wave-collapse-${w.id}').collapse('toggle')">
+                    <div>
+                        <strong>${w.name}</strong> 
+                        <div class="text-muted small">Release Time: ${releaseDate.toLocaleString()} <strong class="text-primary">${relativeStr}</strong></div>
                     </div>
-                    <button class="btn btn-sm btn-info" onclick="assignChallenges(${w.id})">Save Challenges</button>
-                    <button class="btn btn-sm btn-danger float-right" onclick="deleteWave(${w.id})">Delete Wave</button>
+                    <div>
+                        <span class="badge ${w.released ? 'badge-success' : 'badge-warning'} mr-2">${w.released ? 'Released' : 'Pending'}</span>
+                        <i class="fas fa-chevron-down text-muted"></i>
+                    </div>
                 </div>
-            </div></div>`;
+                <div class="collapse" id="wave-collapse-${w.id}">
+                    <div class="card-body">
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 8px; border-radius: 4px; background: #fafafa;">
+                            ${chalCheckboxes || '<i>No challenges available</i>'}
+                        </div>
+                        <button class="btn btn-sm btn-info" onclick="assignChallenges(${w.id})">Save Challenges</button>
+                        <button class="btn btn-sm btn-danger float-right" onclick="deleteWave(${w.id})">Delete Wave</button>
+                    </div>
+                </div>
+            </div>`;
         });
         document.getElementById('waves-list').innerHTML = html || '<i>No waves created yet.</i>';
     });
+}
+function toggleCategory(btn, waveId) {
+    const container = btn.closest('.border');
+    const checkboxes = container.querySelectorAll('.wave-chal-checkbox-' + waveId);
+    let allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
 }
 function createWave() {
     const name = document.getElementById('wave-name').value;
@@ -208,6 +233,7 @@ function assignChallenges(id) {
 						</td>
 						<th class="sort-col text-center"><b>ID</b></th>
 						<th class="sort-col"><b>Name</b></th>
+						<th class="sort-col"><b>Author</b></th>
 						<th class="sort-col"><b>Category</b></th>
 						<th class="sort-col text-center"><b>Value</b></th>
 						<th class="sort-col text-center"><b>Type</b></th>
@@ -225,6 +251,7 @@ function assignChallenges(id) {
 							</td>
 							<td class="text-center">{{ challenge.id }}</td>
 							<td><a href="{{ url_for('admin.challenges_detail', challenge_id=challenge.id) }}">{{ challenge.name }}</a></td>
+							<td>{{ challenge.attribution or '' }}</td>
 							<td>{{ challenge.category }}</td>
 							<td class="text-center">{{ challenge.value }}</td>
 							<td class="text-center">{{ challenge.type }}</td>

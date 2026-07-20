@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block theme_header %}
-  {% if request.path != '/' and request.path != '/index' %}
+  {% if true %}
     {{ Configs.theme_header }}
   {% endif %}
 {% endblock %}
 
 {% block navbar %}
-  {% if request.path != '/' and request.path != '/index' %}
+  {% if true %}
     {% include "components/navbar.html" %}
   {% endif %}
 {% endblock %}

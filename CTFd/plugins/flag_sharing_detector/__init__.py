@@ -39,14 +39,19 @@ def load(app):
     @cheat_bp.route('/admin/cheat-detection', methods=['GET'])
     @admins_only
     def cheat_detection():
+        from CTFd.models import Teams
+        from sqlalchemy import func
+
         Cheater = db.aliased(Users, name="cheater")
         Victim = db.aliased(Users, name="victim")
+        CheaterTeam = db.aliased(Teams, name="cheater_team")
+        VictimTeam = db.aliased(Teams, name="victim_team")
 
         cheats = db.session.query(
-            Cheater.id.label('cheater_id'),
-            Cheater.name.label('cheater_name'),
-            Victim.id.label('victim_id'),
-            Victim.name.label('victim_name'),
+            func.coalesce(Cheater.team_id, Cheater.id).label('cheater_id'),
+            func.coalesce(CheaterTeam.name, Cheater.name).label('cheater_name'),
+            func.coalesce(Victim.team_id, Victim.id).label('victim_id'),
+            func.coalesce(VictimTeam.name, Victim.name).label('victim_name'),
             Submissions.provided.label('flag'),
             Submissions.date.label('date'),
             Challenges.name.label('challenge_name')
@@ -58,11 +63,15 @@ def load(app):
             Victim, WhaleFlagHistory.user_id == Victim.id
         ).join(
             Challenges, Submissions.challenge_id == Challenges.id
+        ).outerjoin(
+            CheaterTeam, Cheater.team_id == CheaterTeam.id
+        ).outerjoin(
+            VictimTeam, Victim.team_id == VictimTeam.id
         ).filter(
             Submissions.type == 'incorrect',
             Submissions.user_id != WhaleFlagHistory.user_id,
             db.or_(Cheater.team_id == None, Victim.team_id == None, Cheater.team_id != Victim.team_id)
-        ).all()
+        ).order_by(Submissions.date.desc()).all()
 
         return render_template('cheat_detection.html', cheats=cheats)
 

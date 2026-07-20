@@ -97,6 +97,12 @@ class DynamicValueDockerChallenge(BaseChallenge):
     def solve(cls, user, team, challenge, request):
         super().solve(user, team, challenge, request)
 
+        from .utils.control import ControlUtil
+        try:
+            ControlUtil.try_remove_container(user.id)
+        except Exception:
+            pass
+
         if challenge.dynamic_score == 1:
             DynamicValueChallenge.calculate_value(challenge)
 
