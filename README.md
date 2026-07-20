@@ -11,6 +11,16 @@ This repository contains the custom **CTFd** deployment used for the ExploitX "I
 - **Single Use Tokens**: A plugin for distributing one-time-use registration tokens to control player entry.
 - **Wave Challenges**: Scheduled release of challenges based on event waves.
 
+## Interface Screenshots
+
+Here is a glimpse of the custom "Into The Void" theme in action:
+
+<div align="center">
+  <img src="screenshots/home.png" width="45%" alt="Home Page">
+  <img src="screenshots/challenges.png" width="45%" alt="Challenges Page">
+  <img src="screenshots/scoreboard.png" width="45%" alt="Scoreboard">
+</div>
+
 ## Prerequisites
 
 Because the dynamic challenge infrastructure requires a secure overlay network to route traffic between the challenge containers and the `frps` router, your Docker engine **must have Swarm mode enabled**.
