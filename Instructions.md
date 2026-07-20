@@ -9,6 +9,9 @@ This guide provides instructions for seniors and admins on how to operate and ma
 ## 1. Creating Dynamic Docker Challenges (CTFd-Whale)
 This platform uses the `ctfd-whale` plugin to isolate players by spinning up a private, dynamic Docker container for every team that requests one.
 
+> [!IMPORTANT]
+> Because CTFd-Whale uses Docker overlay networks to route traffic, your Docker engine **must have Swarm mode enabled**. You must run `docker swarm init` on your server before starting `docker-compose up -d`.
+
 **How to add a new dynamic challenge:**
 1. Navigate to the CTFd Admin Panel -> **Challenges** -> **Create Challenge**.
 2. Select **dynamic_docker** as the challenge type.
