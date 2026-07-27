@@ -50,7 +50,8 @@ class AdminContainers(Resource):
     @admins_only
     def patch():
         user_id = request.args.get('user_id', -1)
-        result, message = ControlUtil.try_renew_container(user_id=int(user_id))
+        container_id = request.args.get('container_id')
+        result, message = ControlUtil.try_renew_container(user_id=int(user_id), container_id=container_id)
         if not result:
             abort(403, message, success=False)
         return {'success': True, 'message': message}
@@ -59,7 +60,8 @@ class AdminContainers(Resource):
     @admins_only
     def delete():
         user_id = request.args.get('user_id')
-        result, message = ControlUtil.try_remove_container(user_id)
+        container_id = request.args.get('container_id')
+        result, message = ControlUtil.try_remove_container(user_id, container_id=container_id)
         return {'success': result, 'message': message}
 
 
@@ -71,7 +73,7 @@ class UserContainers(Resource):
     def get():
         user_id = current_user.get_current_user().id
         challenge_id = request.args.get('challenge_id')
-        container = DBContainer.get_current_containers(user_id=user_id)
+        container = DBContainer.get_current_containers(user_id=user_id, challenge_id=challenge_id)
         if not container:
             return {'success': True, 'data': {}}
         timeout = int(get_config("whale:docker_timeout", "3600"))
@@ -94,7 +96,6 @@ class UserContainers(Resource):
     @frequency_limited
     def post():
         user_id = current_user.get_current_user().id
-        ControlUtil.try_remove_container(user_id)
 
         challenge_id = request.args.get('challenge_id')
         result, message = ControlUtil.try_add_container(
@@ -113,14 +114,14 @@ class UserContainers(Resource):
         user_id = current_user.get_current_user().id
         challenge_id = request.args.get('challenge_id')
         docker_max_renew_count = int(get_config("whale:docker_max_renew_count", 5))
-        container = DBContainer.get_current_containers(user_id)
+        container = DBContainer.get_current_containers(user_id, challenge_id)
         if container is None:
             abort(403, 'Instance not found.', success=False)
         if int(container.challenge_id) != int(challenge_id):
             abort(403, f'Container started but not from this challenge（{container.challenge.name}）', success=False)
         if container.renew_count >= docker_max_renew_count:
             abort(403, 'Max renewal count exceed.', success=False)
-        result, message = ControlUtil.try_renew_container(user_id=user_id)
+        result, message = ControlUtil.try_renew_container(user_id=user_id, challenge_id=challenge_id)
         return {'success': result, 'message': message}
 
     @staticmethod
@@ -128,7 +129,8 @@ class UserContainers(Resource):
     @frequency_limited
     def delete():
         user_id = current_user.get_current_user().id
-        result, message = ControlUtil.try_remove_container(user_id)
+        challenge_id = request.args.get('challenge_id')
+        result, message = ControlUtil.try_remove_container(user_id, challenge_id=challenge_id)
         if not result:
             abort(403, message, success=False)
         return {'success': True, 'message': message}

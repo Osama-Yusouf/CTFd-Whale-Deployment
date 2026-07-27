@@ -10,6 +10,7 @@ def setup_default_configs():
         'docker_credentials': '',
         'docker_dns': '127.0.0.1',
         'docker_max_container_count': '100',
+        'docker_max_container_per_user': '1',
         'docker_max_renew_count': '5',
         'docker_subnet': '174.1.0.0/16',
         'docker_subnet_new_prefix': '24',

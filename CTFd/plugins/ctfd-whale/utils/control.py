@@ -17,8 +17,18 @@ class ControlUtil:
             return False, 'Server busy, please retry.'
         try:
             limit = int(get_config("whale:docker_max_container_count", 1000))
-            if int(DBContainer.get_all_alive_container_count()) > limit:
+            if int(DBContainer.get_all_alive_container_count()) >= limit:
                 return False, 'Max container count exceed.'
+            
+            user_limit = int(get_config("whale:docker_max_container_per_user", 1))
+            user_containers = DBContainer.get_all_current_containers(user_id=user_id)
+            if len(user_containers) >= user_limit:
+                return False, f'You can only have up to {user_limit} containers running simultaneously.'
+            
+            for c in user_containers:
+                if int(c.challenge_id) == int(challenge_id):
+                    return False, 'Container for this challenge already exists.'
+
             container = DBContainer.create_container_record(user_id, challenge_id)
         finally:
             cache.release_global_lock()
@@ -34,12 +44,15 @@ class ControlUtil:
             DockerUtils.remove_container(container)
         except Exception:
             pass
-        DBContainer.remove_container_record(user_id)
+        DBContainer.remove_container_record(user_id, challenge_id=challenge_id)
         return False, msg
 
     @staticmethod
-    def try_remove_container(user_id):
-        container = DBContainer.get_current_containers(user_id=user_id)
+    def try_remove_container(user_id, challenge_id=None, container_id=None):
+        if container_id:
+            container = DBContainer.get_container_by_id(container_id)
+        else:
+            container = DBContainer.get_current_containers(user_id=user_id, challenge_id=challenge_id)
         if not container:
             return False, 'No such container'
         for _ in range(3):  # configurable? as "onerror_retry_cnt"
@@ -48,15 +61,18 @@ class ControlUtil:
                 if not ok:
                     return False, msg
                 DockerUtils.remove_container(container)
-                DBContainer.remove_container_record(user_id)
+                DBContainer.remove_container_record(user_id, challenge_id=challenge_id, container_id=container_id)
                 return True, 'Container destroyed'
             except Exception:
                 print(traceback.format_exc())
         return False, 'Failed when destroying instance, please contact admin!'
 
     @staticmethod
-    def try_renew_container(user_id):
-        container = DBContainer.get_current_containers(user_id)
+    def try_renew_container(user_id, challenge_id=None, container_id=None):
+        if container_id:
+            container = DBContainer.get_container_by_id(container_id)
+        else:
+            container = DBContainer.get_current_containers(user_id=user_id, challenge_id=challenge_id)
         if not container:
             return False, 'No such container'
         timeout = int(get_config("whale:docker_timeout", "3600"))

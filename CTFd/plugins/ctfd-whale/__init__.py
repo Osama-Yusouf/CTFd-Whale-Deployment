@@ -96,7 +96,7 @@ def load(app):
         with app.app_context():
             results = DBContainer.get_all_expired_container()
             for r in results:
-                ControlUtil.try_remove_container(r.user_id)
+                ControlUtil.try_remove_container(r.user_id, container_id=r.id)
 
     app.register_blueprint(page_blueprint)
 
