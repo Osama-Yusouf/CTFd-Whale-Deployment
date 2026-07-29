@@ -97,7 +97,7 @@ services:
       "--bind_addr=0.0.0.0",
       "--bind_port=7000",
       "--token=your_token",
-      "--subdomain_host=13.207.91.86.nip.io",
+      "--subdomain_host=ctf.exploitx.org",
       "--vhost_http_port=8080",
     ]
     ports:

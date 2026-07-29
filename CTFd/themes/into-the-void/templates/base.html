@@ -8,46 +8,29 @@
 
   {{ meta | safe }}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
   {% block stylesheets %}
     {{ Assets.css("assets/scss/main.scss") }}
     <style>
       /* === INTO THE VOID THEME === */
       :root {
-        --void-deep: #050508;
-        --panel: #12121e;
-        --portal-violet: #7c5cff;
-        --rift-magenta: #ff3d8a;
-        --quantum-blue: #3dc7ff;
-        --singularity-amber: #ffb238;
-        --text-hi: #f3f1fb;
-        --text-mid: #9a94b8;
-        --text-dim: #5c5878;
-        --line: rgba(255,255,255,0.08);
-
-        /* Backwards compatibility */
-        --void: var(--rift-magenta);
-        --void-light: var(--singularity-amber);
-        --void-dim: var(--portal-violet);
-        --void-dark: var(--void-deep);
-        --void-glow: rgba(124,92,255,0.5);
-        --glass-bg: rgba(18, 18, 30, 0.65);
-        --glass-border: var(--line);
+        --void: #ff00ff;
+        --void-light: #ff66ff;
+        --void-dim: #8a2be2;
+        --void-dark: #1a0033;
+        --void-glow: rgba(255, 0, 255, 0.5);
+        --glass-bg: rgba(15, 15, 15, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
       }
       
       body, html {
-        background: var(--void-deep) !important;
-        font-family: 'Chakra Petch', sans-serif;
-        color: var(--text-hi);
+        background: transparent !important;
+        color: #fff;
         min-height: 100vh;
-        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="4" fill="%23000" stroke="%23ff3d8a" stroke-width="1"/><circle cx="16" cy="16" r="12" fill="none" stroke="%237c5cff" stroke-width="1.5" stroke-dasharray="4 4"/></svg>') 16 16, crosshair !important;
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="4" fill="%23000" stroke="%23ff00ff" stroke-width="1"/><circle cx="16" cy="16" r="12" fill="none" stroke="%238a2be2" stroke-width="1.5" stroke-dasharray="4 4"/></svg>') 16 16, crosshair !important;
       }
       
       a, button, .btn, input[type="submit"], .cursor-pointer {
-        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="5" fill="%23000" stroke="%23ff3d8a" stroke-width="2"/><circle cx="16" cy="16" r="14" fill="none" stroke="%237c5cff" stroke-width="2" stroke-dasharray="6 4"/></svg>') 16 16, pointer !important;
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="5" fill="%23000" stroke="%23ff00ff" stroke-width="2"/><circle cx="16" cy="16" r="14" fill="none" stroke="%238a2be2" stroke-width="2" stroke-dasharray="6 4"/></svg>') 16 16, pointer !important;
       }
       
       /* === LAYOUT COMPONENTS === */
